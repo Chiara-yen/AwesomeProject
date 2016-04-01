@@ -5,6 +5,7 @@ import React, {
   StyleSheet,
   Text,
   View,
+  ListView,
 } from 'react-native';
 
 const REQUEST_URL = 'https://raw.githubusercontent.com/facebook/react-native/master/docs/MoviesExample.json';
@@ -13,7 +14,10 @@ export default class Movie extends Component {
 	constructor(props) {
 	  super(props);
 	  this.state = {
-	    movies: null,
+			dataSource: new ListView.DataSource({
+				rowHasChanged: (row1, row2) => row1 !== row2,
+			}),
+			loaded: false,
 	  };
 	}
 
@@ -25,18 +29,27 @@ export default class Movie extends Component {
 		fetch(REQUEST_URL)
 			.then((response) => response.json())
 			.then((responseData) => {
+				console.log(`%c fetchData get:`,'color:#F69;font-weight:bold;')
+				console.log(responseData.movies)
 			  this.setState({
-			    movies: responseData.movies,
+					dataSource: this.state.dataSource.cloneWithRows(responseData.movies),
+					loaded: true,
 			  });
 			})
 			.done();
 	}
 
 	render() {
-		if (!this.state.movies) {
+		if (!this.state.loaded) {
 			return this.renderLoadingView();
 		}
-		return this.renderMovie(this.state.movies[0]);
+		return (
+			<ListView
+			  dataSource={this.state.dataSource}
+			  renderRow={this.renderMovie}
+			  style={styles.listView}
+			/>
+		);
 	}
 
 	renderLoadingView() {
@@ -50,6 +63,8 @@ export default class Movie extends Component {
 	}
 
 	renderMovie(movie) {
+		console.log(`%c renderMovie get:`,'color:yellowgreen;font-weight:bold;')
+		console.log(movie)
 		return (
 		  <View style={styles.container}>
 		    <Image
@@ -87,5 +102,9 @@ const styles = StyleSheet.create({
 	},
 	year: {
 	  textAlign: 'center',
+	},
+	listView: {
+		paddingTop: 20,
+		backgroundColor: '#F5FCFF',
 	},
 });
