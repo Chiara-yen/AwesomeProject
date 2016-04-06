@@ -8,33 +8,48 @@ import React, {
   Component,
   StyleSheet,
   Text,
-  View
+  View,
+  TabBarIOS,
 } from 'react-native';
-import Movie from './components/Movie.js';
+
+import Featured from './components/Featured';
+import Search from './components/Search';
+import Movie from './components/Movie';
 
 class AwesomeProject extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      selectedTab: 'featured'
+    };
+  }
+
   render() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Movie />
-      </View>
+      <TabBarIOS selectedTab={this.state.selectedTab}>
+        <TabBarIOS.Item
+          selected={this.state.selectedTab === 'featured'}
+          systemIcon='featured'
+          onPress={() => {
+              this.setState({
+                  selectedTab: 'featured'
+              });
+          }}>
+          <Featured/>
+        </TabBarIOS.Item>
+        <TabBarIOS.Item
+          selected={this.state.selectedTab === 'search'}
+          systemIcon='search'
+          onPress={() => {
+              this.setState({
+                  selectedTab: 'search'
+              });
+          }}>
+          <Search/>
+        </TabBarIOS.Item>
+      </TabBarIOS>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 20,
-    color: '#F69',
-  },
-});
 
 AppRegistry.registerComponent('AwesomeProject', () => AwesomeProject);
