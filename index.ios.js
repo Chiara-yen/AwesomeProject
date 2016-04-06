@@ -14,7 +14,6 @@ import React, {
 
 import Featured from './components/Featured';
 import Search from './components/Search';
-import Movie from './components/Movie';
 
 class AwesomeProject extends Component {
   constructor(props) {

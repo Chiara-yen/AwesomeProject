@@ -1,16 +1,18 @@
 import React, {
-  AppRegistry,
   Component,
   Image,
   StyleSheet,
   Text,
   View,
   ListView,
+  TouchableHighlight,
 } from 'react-native';
+
+import MovieDetail from './MovieDetail';
 
 const REQUEST_URL = 'https://raw.githubusercontent.com/facebook/react-native/master/docs/MoviesExample.json';
 
-export default class Movie extends Component {
+export default class MovieList extends Component {
 	constructor(props) {
 	  super(props);
 	  this.state = {
@@ -19,6 +21,7 @@ export default class Movie extends Component {
 			}),
 			loaded: false,
 	  };
+	  this.showMovieDetail = this.showMovieDetail.bind(this);
 	}
 
 	componentDidMount() {
@@ -29,8 +32,8 @@ export default class Movie extends Component {
 		fetch(REQUEST_URL)
 			.then((response) => response.json())
 			.then((responseData) => {
-				console.log(`%c fetchData get:`,'color:#F69;font-weight:bold;')
-				console.log(responseData.movies)
+				// console.log(`%c fetchData get:`,'color:#F69;font-weight:bold;')
+				// console.log(responseData.movies)
 			  this.setState({
 					dataSource: this.state.dataSource.cloneWithRows(responseData.movies),
 					loaded: true,
@@ -46,7 +49,7 @@ export default class Movie extends Component {
 		return (
 			<ListView
 			  dataSource={this.state.dataSource}
-			  renderRow={this.renderMovie}
+			  renderRow={this.renderMovie.bind(this)}
 			  style={styles.listView}
 			/>
 		);
@@ -62,20 +65,32 @@ export default class Movie extends Component {
 		);
 	}
 
+	showMovieDetail(movie) {
+		this.props.navigator.push({
+			title: 'Movie Detail',
+			component: MovieDetail,
+			passProps: {movie}
+		});
+	}
+
 	renderMovie(movie) {
-		console.log(`%c renderMovie get:`,'color:yellowgreen;font-weight:bold;')
-		console.log(movie)
+		// console.log(`%c renderMovie get:`,'color:yellowgreen;font-weight:bold;')
+		// console.log(movie)
 		return (
-		  <View style={styles.container}>
-		    <Image
-		      source={{uri: movie.posters.thumbnail}}
-		      style={styles.thumbnail}
-		    />
-		    <View style={styles.rightContainer}>
-		      <Text style={styles.title}>{movie.title}</Text>
-		      <Text style={styles.year}>{movie.year}</Text>
-		    </View>
-		  </View>
+			<TouchableHighlight
+				onPress={ () => this.showMovieDetail(movie) }
+				underlayColor='#ffaaaa'>
+			  <View style={styles.container}>
+			    <Image
+			      source={{uri: movie.posters.thumbnail}}
+			      style={styles.thumbnail}
+			    />
+			    <View style={styles.rightContainer}>
+			      <Text style={styles.title}>{movie.title}</Text>
+			      <Text style={styles.year}>{movie.year}</Text>
+			    </View>
+			  </View>
+			</TouchableHighlight>
 		);
 	}
 }
@@ -104,7 +119,7 @@ const styles = StyleSheet.create({
 	  textAlign: 'center',
 	},
 	listView: {
-		paddingTop: 20,
+		marginTop: 60,
 		backgroundColor: '#F5FCFF',
 	},
 });
