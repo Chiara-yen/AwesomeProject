@@ -11,59 +11,24 @@ import React, {
 
 import BookDetail from './BookDetail';
 
-const REQUEST_URL = 'https://www.googleapis.com/books/v1/volumes?q=subject:fiction';
-
-export default class BookList extends Component {
+export default class BookResults extends Component {
 	constructor(props) {
 	  super(props);
-	  this.state = {
-			dataSource: new ListView.DataSource({
+	  let dataSource = new ListView.DataSource({
 				rowHasChanged: (row1, row2) => row1 !== row2,
-			}),
-			loaded: false,
+			});
+	  this.state = {
+			dataSource: dataSource.cloneWithRows(this.props.books),
 	  };
-	  this.showBookDetail = this.showBookDetail.bind(this);
-	}
-
-	componentDidMount() {
-		this.fetchData();
-	}
-
-	fetchData() {
-		fetch(REQUEST_URL)
-			.then((response) => response.json())
-			.then((responseData) => {
-				// console.log(`%c fetchData get:`,'color:#F69;font-weight:bold;')
-				// console.log(responseData.books)
-			  this.setState({
-					dataSource: this.state.dataSource.cloneWithRows(responseData.items),
-					loaded: true,
-			  });
-			})
-			.done();
 	}
 
 	render() {
-		if (!this.state.loaded) {
-			return this.renderLoadingView();
-		}
 		return (
 			<ListView
 			  dataSource={this.state.dataSource}
 			  renderRow={this.renderBook.bind(this)}
 			  style={styles.listView}
 			/>
-		);
-	}
-
-	renderLoadingView() {
-		return (
-		  <View style={styles.container}>
-		  	<ActivityIndicatorIOS size='large'/>
-		    <Text>
-		      Loading books...
-		    </Text>
-		  </View>
 		);
 	}
 
@@ -126,8 +91,6 @@ const styles = StyleSheet.create({
 	  color: 'gray'
 	},
 	listView: {
-		marginTop: 60,
-		marginBottom: 50,
 		backgroundColor: '#F5FCFF',
 	},
 });

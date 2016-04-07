@@ -12,10 +12,11 @@ import React, {
 export default class BookDetail extends Component {
 	render() {
 		const { book } = this.props;
+		const imgURI = book.volumeInfo.imageLinks ? book.volumeInfo.imageLinks.thumbnail : '';
 		return (
 			<ScrollView style={styles.bgColor}>
 				<View style={styles.container}>
-					<Image style={styles.image} source={{uri: book.volumeInfo.imageLinks.thumbnail}} />
+					<Image style={styles.image} source={{ uri: imgURI }} />
 					<View style={styles.textContainer}>
 					  <Text style={styles.title}>{book.volumeInfo.title}</Text>
 					  <Text style={styles.info}>{book.volumeInfo.description}</Text>
