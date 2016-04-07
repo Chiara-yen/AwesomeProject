@@ -6,13 +6,14 @@ import React, {
   View,
   ListView,
   TouchableHighlight,
+  ActivityIndicatorIOS,
 } from 'react-native';
 
-import MovieDetail from './MovieDetail';
+import BookDetail from './BookDetail';
 
-const REQUEST_URL = 'https://raw.githubusercontent.com/facebook/react-native/master/docs/MoviesExample.json';
+const REQUEST_URL = 'https://www.googleapis.com/books/v1/volumes?q=subject:fiction';
 
-export default class MovieList extends Component {
+export default class BookList extends Component {
 	constructor(props) {
 	  super(props);
 	  this.state = {
@@ -21,7 +22,7 @@ export default class MovieList extends Component {
 			}),
 			loaded: false,
 	  };
-	  this.showMovieDetail = this.showMovieDetail.bind(this);
+	  this.showBookDetail = this.showBookDetail.bind(this);
 	}
 
 	componentDidMount() {
@@ -33,9 +34,9 @@ export default class MovieList extends Component {
 			.then((response) => response.json())
 			.then((responseData) => {
 				// console.log(`%c fetchData get:`,'color:#F69;font-weight:bold;')
-				// console.log(responseData.movies)
+				// console.log(responseData.books)
 			  this.setState({
-					dataSource: this.state.dataSource.cloneWithRows(responseData.movies),
+					dataSource: this.state.dataSource.cloneWithRows(responseData.items),
 					loaded: true,
 			  });
 			})
@@ -49,7 +50,7 @@ export default class MovieList extends Component {
 		return (
 			<ListView
 			  dataSource={this.state.dataSource}
-			  renderRow={this.renderMovie.bind(this)}
+			  renderRow={this.renderBook.bind(this)}
 			  style={styles.listView}
 			/>
 		);
@@ -58,36 +59,37 @@ export default class MovieList extends Component {
 	renderLoadingView() {
 		return (
 		  <View style={styles.container}>
+		  	<ActivityIndicatorIOS size='large'/>
 		    <Text>
-		      Loading movies...
+		      Loading books...
 		    </Text>
 		  </View>
 		);
 	}
 
-	showMovieDetail(movie) {
+	showBookDetail(book) {
 		this.props.navigator.push({
-			title: 'Movie Detail',
-			component: MovieDetail,
-			passProps: {movie}
+			title: 'Book Detail',
+			component: BookDetail,
+			passProps: {book}
 		});
 	}
 
-	renderMovie(movie) {
-		// console.log(`%c renderMovie get:`,'color:yellowgreen;font-weight:bold;')
-		// console.log(movie)
+	renderBook(book) {
+		// console.log(`%c renderBook get:`,'color:yellowgreen;font-weight:bold;')
+		// console.log(book)
 		return (
 			<TouchableHighlight
-				onPress={ () => this.showMovieDetail(movie) }
+				onPress={ () => this.showBookDetail(book) }
 				underlayColor='#ffaaaa'>
 			  <View style={styles.container}>
 			    <Image
-			      source={{uri: movie.posters.thumbnail}}
+			      source={{uri: book.volumeInfo.imageLinks.thumbnail}}
 			      style={styles.thumbnail}
 			    />
 			    <View style={styles.rightContainer}>
-			      <Text style={styles.title}>{movie.title}</Text>
-			      <Text style={styles.year}>{movie.year}</Text>
+			      <Text style={styles.title}>{book.volumeInfo.title}</Text>
+			      <Text style={styles.author}>{book.volumeInfo.authors}</Text>
 			    </View>
 			  </View>
 			</TouchableHighlight>
@@ -102,24 +104,31 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
+    borderWidth: 2,
+    borderColor: 'transparent',
+    borderBottomColor: '#eee',
   },
   thumbnail: {
     width: 53,
     height: 81,
+    margin: 10,
   },
   rightContainer: {
     flex: 1,
   },
 	title: {
-	  fontSize: 20,
+	  fontSize: 16,
 	  marginBottom: 8,
-	  textAlign: 'center',
+	  textAlign: 'left',
 	},
-	year: {
-	  textAlign: 'center',
+	author: {
+		fontSize: 10,
+	  textAlign: 'left',
+	  color: 'gray'
 	},
 	listView: {
 		marginTop: 60,
+		marginBottom: 50,
 		backgroundColor: '#F5FCFF',
 	},
 });

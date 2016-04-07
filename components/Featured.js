@@ -6,7 +6,7 @@ import React, {
   NavigatorIOS,
 } from 'react-native';
 
-import MovieList from './MovieList';
+import BookList from './BookList';
 
 export default class Featured extends Component {
 	render() {
@@ -15,7 +15,7 @@ export default class Featured extends Component {
 				style={styles.container}
 				initialRoute={{
 					title: 'Featured',
-					component: MovieList
+					component: BookList
 				}}>
 			</NavigatorIOS>
 		);

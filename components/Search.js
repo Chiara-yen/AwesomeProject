@@ -6,7 +6,7 @@ import React, {
   NavigatorIOS,
 } from 'react-native';
 
-import MovieList from './MovieList';
+import SearchBook from './SearchBook';
 
 export default class Search extends Component {
 	render() {
@@ -15,7 +15,7 @@ export default class Search extends Component {
 				style={styles.container}
 				initialRoute={{
 					title: 'Search',
-					component: MovieList
+					component: SearchBook
 				}}>
 			</NavigatorIOS>
 		);
